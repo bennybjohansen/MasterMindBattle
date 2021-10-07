@@ -11,36 +11,42 @@ namespace MasterMindBattleApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class GameSummariesController : ControllerBase
     {
         /// <summary>
-        /// Returns a list of users:
-        ///   - If the caller is a regular user, the list only includes users, who are online.
-        ///   - If the caller is an admin, the list may include all users registered on the site.
+        /// Returns a list of summaries for games based on user, status and dates.
+        /// By default the list is limited to:
+        ///  - if the caller is administrator:all users
+        ///  - else the caller.
         /// Paging is supported.
         /// </summary>
-        /// <param name="ReturnAll">
-        ///   - If false returns users who are online.
-        ///   - If true returns all users
-        ///   Note: If caller is not administartor, only online users will be returned
+        /// <param name="UserId">
+        ///   - Limits response to those played by the specified user.
+        /// </param>
+        /// <param name="FromDate">
+        ///   - Limits response to games started after the specified date.
+        /// <param name="InProgress">
+        ///   - Limits response to games which are in progress (default is false)
         /// </param>
         /// <param name="top">
         /// Max number to return
         /// </param>
         /// <param name="skip">
         /// </param>
-        /// Start from record number.
+        /// Start from record number
         /// <returns></returns>
         [HttpGet]
-        public ActionResult<OpenApiList<User>> Get(bool ReturnAll = false, int top=10, int skip=0)
+        public ActionResult<OpenApiList<GameSummary>> Get(string UserId, DateTime FromDate, bool InProgress = false, 
+            int top=10, int skip=0)
+
         {
             int mockDataId = 0;
-            List<User> users = null;
+            List<GameSummary> gameSummaries = null;
 
             //Fetch data (maybe mock data)
             if (OpenApiHelpers.UseMockData(Request, ref mockDataId))
             {
-                users = GetMockData(ReturnAll);
+                gameSummaries = GetMockData(UserId, FromDate,InProgress);
             }
             else
             {
@@ -49,16 +55,16 @@ namespace MasterMindBattleApi.Controllers
 
             //Convert to OpenApi list format and return
             var openApiUserList = new OpenApiList<User>();
-            openApiUserList.BuildFromDataAndQueryParams(Request, users);
+            openApiUserList.BuildFromDataAndQueryParams(Request, gameSummaries);
             return Ok(openApiUserList);
         }
 
-        private List<User> GetMockData(bool returnAll)
+        private List<GameSummary> GetMockData(string userId, DateTime fromDate, bool inProgress)
         {
 
-            List<User> users = new List<User>();
-            users.Add(
-                new User
+            List<GameSummary> gamesummaries = new List<GameSummary>();
+            gamesummaries.Add(
+                new GameSummary
                 {
                     UserId = "UserId1",
                     Name = "Benny Bomstærk",
@@ -107,7 +113,7 @@ namespace MasterMindBattleApi.Controllers
                                 }
                 );
             }
-            return (users);
+            return (gamesummaries);
         }
 
     }

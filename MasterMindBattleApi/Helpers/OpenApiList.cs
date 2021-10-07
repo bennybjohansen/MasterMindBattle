@@ -10,8 +10,14 @@ namespace MasterMindBattleApi.Helpers
 {
     public class OpenApiList<T>
     {
+        /// <summary>
+        /// If present contains full url to fetch next list of records.
+        /// </summary>
         [JsonPropertyName("__next")]
         public string? NextLink { get; set; }
+        /// <summary>
+        /// Envelope array for the data
+        /// </summary>
         public T[] Data { get; set; }
 
 
