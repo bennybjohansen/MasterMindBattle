@@ -13,6 +13,13 @@ namespace MasterMindBattleApi.Controllers
     [ApiController]
     public class SiteStatisticsController : ControllerBase
     {
+        /// <summary>
+        /// Returns site statistics to be shown on front page
+        /// </summary>
+        /// <param name="ReturnAll"></param>
+        /// <param name="top"></param>
+        /// <param name="skip"></param>
+        /// <returns></returns>
         [HttpGet]
         public ActionResult<SiteStatistics> Get(bool ReturnAll = false, int top = 10, int skip = 0)
         {
