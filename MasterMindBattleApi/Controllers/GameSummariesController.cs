@@ -25,6 +25,7 @@ namespace MasterMindBattleApi.Controllers
         /// </param>
         /// <param name="FromDate">
         ///   - Limits response to games started after the specified date.
+        /// </param>
         /// <param name="InProgress">
         ///   - Limits response to games which are in progress (default is false)
         /// </param>
@@ -32,9 +33,13 @@ namespace MasterMindBattleApi.Controllers
         /// Max number to return
         /// </param>
         /// <param name="skip">
-        /// </param>
         /// Start from record number
-        /// <returns></returns>
+        /// </param>
+        /// 
+        /// 
+        /// <returns/>
+        /// 
+
         [HttpGet]
         public ActionResult<OpenApiList<GameSummary>> Get(string UserId, DateTime FromDate, bool InProgress = false, 
             int top=10, int skip=0)
@@ -54,9 +59,9 @@ namespace MasterMindBattleApi.Controllers
             }
 
             //Convert to OpenApi list format and return
-            var openApiUserList = new OpenApiList<User>();
-            openApiUserList.BuildFromDataAndQueryParams(Request, gameSummaries);
-            return Ok(openApiUserList);
+            var openApiGameSummaryList = new OpenApiList<GameSummary>();
+            openApiGameSummaryList.BuildFromDataAndQueryParams(Request, gameSummaries);
+            return Ok(openApiGameSummaryList);
         }
 
         private List<GameSummary> GetMockData(string userId, DateTime fromDate, bool inProgress)
@@ -66,52 +71,35 @@ namespace MasterMindBattleApi.Controllers
             gamesummaries.Add(
                 new GameSummary
                 {
-                    UserId = "UserId1",
-                    Name = "Benny Bomstærk",
-                    Picture = "no picture",
-                    GamesPlayed = 20,
-                    GamesWon = 8,
-                    GamewWonOnTime = 3,
-                    CurrentStatus = new CurrentUserStatus
+                    GameId = "GameId1",
+                    GameStatus = GameStatus.InProgress,
+                    GameType = GameType.Normal,
+                    RowNo = 3,
+                    CurrentRow = new GameRow()
                     {
-                        Status = UserStatus.InGame,
-                        GameOrChallengeId = "2"
-                    }
-                }
-                );
-            users.Add(
-                new User
-                {
-                    UserId = "UserId13",
-                    Name = "Fedtmule",
-                    Picture = "no picture",
-                    GamesPlayed = 10,
-                    GamesWon = 2,
-                    GamewWonOnTime = 3,
-                    CurrentStatus = new CurrentUserStatus
-                    {
-                        Status = UserStatus.InGame,
-                        GameOrChallengeId = "2"
-                    }
-                }
-                );
-            if (returnAll)
+                        Guess = new int[] { 0, 1, 2, 3, 4 },
+                        Score = new RowScore() { NoOfCorrectColors = 2, NoOfCorrectLocations = 1 }
+                    },
+                    Players = new UserSummary[] { new UserSummary() { UserId = "UserId13", Name = "Fedtmule" } }
+                });
+
+            if (!inProgress)
             {
-                users.Add(
-                                new User
-                                {
-                                    UserId = "UserId11",
-                                    Name = "SuperNullen",
-                                    Picture = "no picture",
-                                    GamesPlayed = 10,
-                                    GamesWon = 9,
-                                    GamewWonOnTime = 0,
-                                    CurrentStatus = new CurrentUserStatus
-                                    {
-                                        Status = UserStatus.OffLine,
-                                    }
-                                }
-                );
+                gamesummaries.Add(
+                new GameSummary
+                {
+                    GameId = "GameId19",
+                    GameStatus = GameStatus.InProgress,
+                    GameType = GameType.Normal,
+                    RowNo = 3,
+                    CurrentRow = new GameRow()
+                    {
+                        Guess = new int[] { 0, 1, 2, 3},
+                        Score = new RowScore() { NoOfCorrectColors = 2, NoOfCorrectLocations = 1 }
+                    },
+                    Players = new UserSummary[] { new UserSummary() { UserId = "UserId11", Name = "SuperNullen" } }
+                });
+
             }
             return (gamesummaries);
         }

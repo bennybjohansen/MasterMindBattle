@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 
 namespace MasterMindBattleApi.Models
 {
+    /// <summary>
+    /// Represents a user of this game.
+    /// </summary>
     public class User
     {
         /// <summary>
